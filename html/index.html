@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+	<meta name="author" content="yihu.com" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>科普知识详情页_患者端</title>
+    <link rel="stylesheet" href="../iconfont/iconfont.css" type="text/css" />
+    <link rel="stylesheet" href="../cross/css/cross.min.css" type="text/css" />
+    <link rel="stylesheet" href="../cross/css/ui.all.min.css" type="text/css" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" />
+</head>
+<body>
+<div class="c-main">
+	<div class="audio-box">
+		<div class="audio-icon"><i></i></div>
+		<div class="audio-con">
+			<div class="audio-timeline">
+				<div class="bar"></div>
+				<audio id="audio" hidden="hidden" src="../js/S.H.E - 你曾是少年.mp3"></audio>
+			</div>
+			<div class="audio-time">
+				<span class="curr-time">00:00</span>
+				<span class="all-time">00:00</span>
+			</div>
+		</div>
+	</div>
+	<div class="audio-box">
+		<div class="audio-icon"><i></i></div>
+		<div class="audio-con">
+			<div class="audio-timeline">
+				<div class="bar"></div>
+				<audio id="audio" hidden="hidden" src="../js/S.H.E - 你曾是少年.mp3"></audio>
+			</div>
+			<div class="audio-time">
+				<span class="curr-time">00:00</span>
+				<span class="all-time">00:00</span>
+			</div>
+		</div>
+	</div>
+	<div class="audio-box">
+		<div class="audio-icon"><i></i></div>
+		<div class="audio-con">
+			<div class="audio-timeline">
+				<div class="bar"></div>
+				<audio id="audio" hidden="hidden" src="../js/S.H.E - 你曾是少年.mp3"></audio>
+			</div>
+			<div class="audio-time">
+				<span class="curr-time">00:00</span>
+				<span class="all-time">00:00</span>
+			</div>
+		</div>
+	</div>
+	<div class="audio-box">
+		<div class="audio-icon"><i></i></div>
+		<div class="audio-con">
+			<div class="audio-timeline">
+				<div class="bar"></div>
+				<audio id="audio" hidden="hidden" src="../js/李健-风吹麦浪.mp3"></audio>
+			</div>
+			<div class="audio-time">
+				<span class="curr-time">00:00</span>
+				<span class="all-time">00:00</span>
+			</div>
+		</div>
+	</div>
+	<div class="audio-box">
+		<div class="audio-icon"><i></i></div>
+		<div class="audio-con">
+			<div class="audio-timeline">
+				<div class="bar"></div>
+				<audio id="audio" hidden="hidden" src="../js/李健-风吹麦浪.mp3"></audio>
+			</div>
+			<div class="audio-time">
+				<span class="curr-time">00:00</span>
+				<span class="all-time">00:00</span>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="../cross/js/jquery/2.1.3/jquery.js"></script>
+<script type="text/javascript" src="../cross/js/cross.ui.js"></script>
+<script>
+$(function(){
+	// 播放语音
+  var ad = new AudioControl('.audio-box');
+})
+;(function (){
+	AudioControl=function (obj,option){
+		var defaults = {
+			audiobtn: '.audio-icon',
+			audio: 'audio',
+			audiocon: '.audio-con',
+			timeline:'.audio-timeline',
+			currtime: '.curr-time',
+			alltime: '.all-time',
+			active: 'active',
+			curr: 'curr'
+		};
+		var s = this;
+		s.defaults = $.extend({},defaults, option);
+		s.contain = $(obj);
+		s.init(obj);
+	};
+	AudioControl.prototype = {
+		init: function(obj){
+			this.eventInit(obj);
+		},
+		eventInit: function(obj){
+			var s = this;
+			var $adBtn = $(s.defaults.audiobtn);
+			var currentTime = 0;
+			$(audio).on('loadedmetadata',function(){
+				$(audio).each(function(index,ele){
+					$(ele).parents(s.defaults.audiocon).find(s.defaults.alltime).text(secondToMin(ele.duration));
+				});
+			});
+			$adBtn.off().on('click', function(e) {
+				var thisBox = $(this).parents(obj);
+				var thisCon = $(this).siblings();	
+				var thisAd = thisCon.find(s.defaults.audio).get(0),
+					thisTimeline = thisCon.find(s.defaults.timeline),
+					_this = $(this);
+				thisAd.play();
+
+				// 监听语音播放
+				thisAd.addEventListener('play',function(){
+					thisBox.addClass(s.defaults.active);
+					thisBox.addClass(s.defaults.curr);
+					thisBox.siblings(s.contain).removeClass(s.defaults.curr);
+					thisBox.siblings(s.contain).find('audio').each(function(index,ele){
+						ele.pause();
+					})
+				});
+
+				// 监听语音结束
+				thisAd.addEventListener('ended',function(){
+					thisBox.removeClass(s.defaults.curr);
+				});
+
+				// 语音暂停
+				if(thisBox.hasClass(s.defaults.curr)) {
+					thisAd.pause();
+					thisBox.removeClass(s.defaults.curr);
+				}
+				
+				//进度条控制
+				thisTimeline.on('touchend',function(e){
+					var x = e.originalEvent.changedTouches[0].clientX-this.offsetLeft;
+			        var X = x < 0 ? 0 : x ;
+			        var W = $(this).width();
+			        var place = X > W ? W : X;
+			        thisAd.currentTime = (place/W).toFixed(2)*thisAd.duration;
+			        $(this).children().css({width:(place/W).toFixed(2)*100+"%"})
+				});
+				
+				// 设置播放时间
+			    function setTimeShow(t) {
+			        t = Math.floor(t);
+			        var playTime = secondToMin(thisAd.currentTime);
+			        thisCon.find(s.defaults.currtime).text(playTime);
+			        thisCon.find(s.defaults.alltime).text(secondToMin(thisAd.duration));
+			        thisCon.find(s.defaults.timeline).children().css({width:(t/thisAd.duration).toFixed(4)*100+"%"})
+			    }
+				setInterval(function () {
+		        	var currentTime = thisAd.currentTime;
+			        setTimeShow(currentTime);
+			    }, 1000);
+			    
+				e.preventDefault();
+			});
+			
+		    // 计算时间
+		    function secondToMin(s) {
+			    var MM = Math.floor(s / 60);
+			    var SS = s % 60;
+			    if (MM < 10)
+			       MM = "0" + MM;
+			    if (SS < 10)
+			       SS = "0" + SS;
+			    var min = MM + ":" + SS;
+			    return min.split('.')[0];
+		    }
+		}
+	};
+})();
+
+</script>
+</body>
+</html>
