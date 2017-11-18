@@ -20,7 +20,7 @@
 		<div class="audio-con">
 			<div class="audio-timeline">
 				<div class="bar"></div>
-				<audio id="audio" hidden="hidden" src="../js/S.H.E - 你曾是少年.mp3"></audio>
+				<audio hidden="hidden" src="../js/S.H.E - 你曾是少年.mp3"></audio>
 			</div>
 			<div class="audio-time">
 				<span class="curr-time">00:00</span>
@@ -33,7 +33,7 @@
 		<div class="audio-con">
 			<div class="audio-timeline">
 				<div class="bar"></div>
-				<audio id="audio" hidden="hidden" src="../js/S.H.E - 你曾是少年.mp3"></audio>
+				<audio hidden="hidden" src="../js/S.H.E - 你曾是少年.mp3"></audio>
 			</div>
 			<div class="audio-time">
 				<span class="curr-time">00:00</span>
@@ -46,7 +46,7 @@
 		<div class="audio-con">
 			<div class="audio-timeline">
 				<div class="bar"></div>
-				<audio id="audio" hidden="hidden" src="../js/S.H.E - 你曾是少年.mp3"></audio>
+				<audio hidden="hidden" src="../js/S.H.E - 你曾是少年.mp3"></audio>
 			</div>
 			<div class="audio-time">
 				<span class="curr-time">00:00</span>
@@ -59,7 +59,7 @@
 		<div class="audio-con">
 			<div class="audio-timeline">
 				<div class="bar"></div>
-				<audio id="audio" hidden="hidden" src="../js/李健-风吹麦浪.mp3"></audio>
+				<audio hidden="hidden" src="../js/李健-风吹麦浪.mp3"></audio>
 			</div>
 			<div class="audio-time">
 				<span class="curr-time">00:00</span>
@@ -72,7 +72,7 @@
 		<div class="audio-con">
 			<div class="audio-timeline">
 				<div class="bar"></div>
-				<audio id="audio" hidden="hidden" src="../js/李健-风吹麦浪.mp3"></audio>
+				<audio hidden="hidden" src="../js/李健-风吹麦浪.mp3"></audio>
 			</div>
 			<div class="audio-time">
 				<span class="curr-time">00:00</span>
@@ -88,6 +88,7 @@ $(function(){
 	// 播放语音
   var ad = new AudioControl('.audio-box');
 })
+//音频
 ;(function (){
 	AudioControl=function (obj,option){
 		var defaults = {
@@ -113,57 +114,54 @@ $(function(){
 			var s = this;
 			var $adBtn = $(s.defaults.audiobtn);
 			var currentTime = 0;
-			$(audio).on('loadedmetadata',function(){
-				$(audio).each(function(index,ele){
-					$(ele).parents(s.defaults.audiocon).find(s.defaults.alltime).text(secondToMin(ele.duration));
-				});
+			$(s.defaults.audio).on('loadedmetadata',function(){
+				$(this).parents(s.defaults.audiocon).find(s.defaults.alltime).text(secondToMin(this.duration));
 			});
 			$adBtn.off().on('click', function(e) {
-				var thisBox = $(this).parents(obj);
-				var thisCon = $(this).siblings();	
-				var thisAd = thisCon.find(s.defaults.audio).get(0),
-					thisTimeline = thisCon.find(s.defaults.timeline),
-					_this = $(this);
+				var $thisBox = $(this).parents(obj);
+				var $thisCon = $(this).siblings();	
+				var thisAd = $thisCon.find(s.defaults.audio).get(0),
+					$thisTimeline = $thisCon.find(s.defaults.timeline);
 				thisAd.play();
 
 				// 监听语音播放
-				thisAd.addEventListener('play',function(){
-					thisBox.addClass(s.defaults.active);
-					thisBox.addClass(s.defaults.curr);
-					thisBox.siblings(s.contain).removeClass(s.defaults.curr);
-					thisBox.siblings(s.contain).find('audio').each(function(index,ele){
+				$(thisAd).on('play',function(){
+					$thisBox.addClass(s.defaults.active);
+					$thisBox.addClass(s.defaults.curr);
+					$thisBox.siblings(s.contain).removeClass(s.defaults.curr);
+					$thisBox.siblings(s.contain).find('audio').each(function(index,ele){
 						ele.pause();
-					})
+					});
 				});
 
 				// 监听语音结束
-				thisAd.addEventListener('ended',function(){
-					thisBox.removeClass(s.defaults.curr);
+				$(thisAd).on('ended',function(){
+					$thisBox.removeClass(s.defaults.curr);
 				});
 
 				// 语音暂停
-				if(thisBox.hasClass(s.defaults.curr)) {
+				if($thisBox.hasClass(s.defaults.curr)) {
 					thisAd.pause();
-					thisBox.removeClass(s.defaults.curr);
+					$thisBox.removeClass(s.defaults.curr);
 				}
 				
 				//进度条控制
-				thisTimeline.on('touchend',function(e){
+				$thisTimeline.on('touchend',function(e){
 					var x = e.originalEvent.changedTouches[0].clientX-this.offsetLeft;
 			        var X = x < 0 ? 0 : x ;
 			        var W = $(this).width();
 			        var place = X > W ? W : X;
 			        thisAd.currentTime = (place/W).toFixed(2)*thisAd.duration;
 			        $(this).children().css({width:(place/W).toFixed(2)*100+"%"})
+				      $(thisAd).trigger('play');
 				});
 				
 				// 设置播放时间
 			    function setTimeShow(t) {
 			        t = Math.floor(t);
 			        var playTime = secondToMin(thisAd.currentTime);
-			        thisCon.find(s.defaults.currtime).text(playTime);
-			        thisCon.find(s.defaults.alltime).text(secondToMin(thisAd.duration));
-			        thisCon.find(s.defaults.timeline).children().css({width:(t/thisAd.duration).toFixed(4)*100+"%"})
+			        $thisCon.find(s.defaults.currtime).text(playTime);
+			        $thisCon.find(s.defaults.timeline).children().css({width:(t/thisAd.duration).toFixed(4)*100+"%"})
 			    }
 				setInterval(function () {
 		        	var currentTime = thisAd.currentTime;
