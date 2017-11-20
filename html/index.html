@@ -113,7 +113,6 @@ $(function(){
 		eventInit: function(obj){
 			var s = this;
 			var $adBtn = $(s.defaults.audiobtn);
-			var currentTime = 0;
 			$(s.defaults.audio).on('loadedmetadata',function(){
 				$(this).parents(s.defaults.audiocon).find(s.defaults.alltime).text(secondToMin(this.duration));
 			});
@@ -163,10 +162,10 @@ $(function(){
 			        $thisCon.find(s.defaults.currtime).text(playTime);
 			        $thisCon.find(s.defaults.timeline).children().css({width:(t/thisAd.duration).toFixed(4)*100+"%"})
 			    }
-				setInterval(function () {
-		        	var currentTime = thisAd.currentTime;
-			        setTimeShow(currentTime);
-			    }, 1000);
+				//音频播放位置发生改变时
+				$(thisAd).on("timeupdate", function() {
+					setTimeShow(this.currentTime);
+				});
 			    
 				e.preventDefault();
 			});
