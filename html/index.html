@@ -123,20 +123,12 @@ $(function(){
 				var thisAd = $thisCon.find(s.defaults.audio).get(0),
 					$thisTimeline = $thisCon.find(s.defaults.timeline);
 				thisAd.play();
-				if(thisAd.readyState < 2){//readyState 属性返回音频的当前就绪状态。2表示关于当前播放位置的数据是可用的，但没有足够的数据来播放下一帧/毫秒
+				if(thisAd.readyState < 2){
 	  		  		$thisBox.addClass(s.defaults.loading);
 		  		}
-				//ios10和ios11执行canplaythrough方法
-				var ua = navigator.userAgent.toLowerCase();
-				if(ua.match(/iPhone/i)=="iphone" && ua.match(/OS 1[0-1]_[0-9]/i)) {
-					$(thisAd).on('canplaythrough',function(){
-			          	$thisBox.removeClass(s.defaults.loading);
-			        });
-				}else{
-					$(thisAd).on('canplay',function(){
-			          	$thisBox.removeClass(s.defaults.loading);
-			        });
-				}
+		        $(thisAd).on('canplay',function(){
+		          	$thisBox.removeClass(s.defaults.loading);
+		        });
 				// 监听语音播放
 				$(thisAd).on('play',function(){
 					$thisBox.addClass(s.defaults.active);
