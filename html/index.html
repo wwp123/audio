@@ -15,7 +15,7 @@
 </head>
 <body>
 <div class="c-main">
-	<div class="audio-box">
+	<div class="audio-box audio-blue">
 		<div class="audio-icon"><i></i></div>
 		<div class="audio-con">
 			<div class="audio-timeline">
@@ -99,7 +99,8 @@ $(function(){
 			currtime: '.curr-time',
 			alltime: '.all-time',
 			active: 'active',
-			curr: 'curr'
+			curr: 'curr',
+			loading: 'loading'
 		};
 		var s = this;
 		s.defaults = $.extend({},defaults, option);
@@ -116,13 +117,18 @@ $(function(){
 			$(s.defaults.audio).on('loadedmetadata',function(){
 				$(this).parents(s.defaults.audiocon).find(s.defaults.alltime).text(secondToMin(this.duration));
 			});
-			$adBtn.off().on('click', function(e) {
+			$adBtn.on('click', function(e) {
 				var $thisBox = $(this).parents(obj);
 				var $thisCon = $(this).siblings();	
 				var thisAd = $thisCon.find(s.defaults.audio).get(0),
 					$thisTimeline = $thisCon.find(s.defaults.timeline);
 				thisAd.play();
-
+				if(thisAd.readyState < 2){
+	  		  		$thisBox.addClass(s.defaults.loading);
+		  		}
+		        $(thisAd).on('canplay',function(){
+		          	$thisBox.removeClass(s.defaults.loading);
+		        });
 				// 监听语音播放
 				$(thisAd).on('play',function(){
 					$thisBox.addClass(s.defaults.active);
@@ -151,8 +157,8 @@ $(function(){
 			        var W = $(this).width();
 			        var place = X > W ? W : X;
 			        thisAd.currentTime = (place/W).toFixed(2)*thisAd.duration;
-			        $(this).children().css({width:(place/W).toFixed(2)*100+"%"})
-				      $(thisAd).trigger('play');
+			        $(this).children().css({width:(place/W).toFixed(2)*100+"%"});
+				    $(thisAd).trigger('play');
 				});
 				
 				// 设置播放时间
@@ -162,7 +168,7 @@ $(function(){
 			        $thisCon.find(s.defaults.currtime).text(playTime);
 			        $thisCon.find(s.defaults.timeline).children().css({width:(t/thisAd.duration).toFixed(4)*100+"%"})
 			    }
-				//音频播放位置发生改变时
+			    //音频播放位置发生改变时
 				$(thisAd).on("timeupdate", function() {
 					setTimeShow(this.currentTime);
 				});
@@ -172,19 +178,22 @@ $(function(){
 			
 		    // 计算时间
 		    function secondToMin(s) {
+		    	console.log(s)
 			    var MM = Math.floor(s / 60);
+			    console.log(MM)
 			    var SS = s % 60;
-			    if (MM < 10)
+			    if (MM < 10){
 			       MM = "0" + MM;
-			    if (SS < 10)
+			    }
+			    if (SS < 10){
 			       SS = "0" + SS;
+			    }
 			    var min = MM + ":" + SS;
 			    return min.split('.')[0];
 		    }
 		}
 	};
 })();
-
 </script>
 </body>
 </html>
