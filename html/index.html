@@ -131,6 +131,7 @@ $(function(){
 			// loadedmetadata捕获阶段处理最大时长，因为这个事件默认bubbles=false
 			document.addEventListener("loadedmetadata",function(e){
 				var _this = e.target;
+				if($(_this).parents(obj).length == 0)return;
 				$(_this).parents(s.defaults.audiocon).find(s.defaults.alltime).text(secondToMin(_this.duration));
 			},true);
 			$(document).on('click',s.defaults.audiobtn, function(e) {
