@@ -117,7 +117,7 @@ $(function(){
 			$(s.defaults.audio).on('loadedmetadata',function(){
 				$(this).parents(s.defaults.audiocon).find(s.defaults.alltime).text(secondToMin(this.duration));
 			});
-			$adBtn.on('click', function(e) {
+			$(document).on('click',s.defaults.audiobtn, function(e) {
 				var $thisBox = $(this).parents(obj);
 				var $thisCon = $(this).siblings();	
 				var thisAd = $thisCon.find(s.defaults.audio).get(0),
