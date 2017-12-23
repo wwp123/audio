@@ -87,6 +87,20 @@
 $(function(){
 	// 播放语音
   var ad = new AudioControl('.audio-box');
+  $(".c-main").append('	<div class="audio-box">\
+		<div class="audio-icon"><i></i></div>\
+		<div class="audio-con">\
+			<div class="audio-timeline">\
+				<div class="bar"></div>\
+				<audio hidden="hidden" src="../js/李健-风吹麦浪.mp3"></audio>\
+			</div>\
+			<div class="audio-time">\
+				<span class="curr-time">00:00</span>\
+				<span class="all-time">00:00</span>\
+			</div>\
+		</div>\
+	</div>\
+');
 })
 //音频
 ;(function (){
@@ -114,9 +128,11 @@ $(function(){
 		eventInit: function(obj){
 			var s = this;
 			var $adBtn = $(s.defaults.audiobtn);
-			$(s.defaults.audio).on('loadedmetadata',function(){
-				$(this).parents(s.defaults.audiocon).find(s.defaults.alltime).text(secondToMin(this.duration));
-			});
+			// loadedmetadata捕获阶段处理最大时长，因为这个事件默认bubbles=false
+			document.addEventListener("loadedmetadata",function(e){
+				var _this = e.target;
+				$(_this).parents(s.defaults.audiocon).find(s.defaults.alltime).text(secondToMin(_this.duration));
+			},true);
 			$(document).on('click',s.defaults.audiobtn, function(e) {
 				var $thisBox = $(this).parents(obj);
 				var $thisCon = $(this).siblings();	
@@ -186,9 +202,9 @@ $(function(){
 			
 		    // 计算时间
 		    function secondToMin(s) {
-		    	console.log(s)
+		    	// console.log(s)
 			    var MM = Math.floor(s / 60);
-			    console.log(MM)
+			    // console.log(MM)
 			    var SS = s % 60;
 			    if (MM < 10){
 			       MM = "0" + MM;
