@@ -7,8 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <title>科普知识详情页_患者端</title>
-    <link rel="stylesheet" href="../iconfont/iconfont.css" type="text/css" />
+    <title>audio</title>
     <link rel="stylesheet" href="../cross/css/cross.min.css" type="text/css" />
     <link rel="stylesheet" href="../cross/css/ui.all.min.css" type="text/css" />
     <link rel="stylesheet" href="../css/style.css" type="text/css" />
@@ -156,12 +155,12 @@ $(function(){
 				}
 				// 监听语音播放
 				$(thisAd).on('play',function(){
-					$thisBox.addClass(s.defaults.active);
-					$thisBox.addClass(s.defaults.curr);
-					$thisBox.siblings(s.contain).removeClass(s.defaults.curr);
-					$thisBox.siblings(s.contain).find('audio').each(function(index,ele){
+					$(obj).removeClass(s.defaults.curr);
+					$(obj).not($(this).parents(obj)).find('audio').each(function(index,ele){
 						ele.pause();
 					});
+					$thisBox.addClass(s.defaults.active);
+					$thisBox.addClass(s.defaults.curr);
 				});
 
 				// 监听语音结束
