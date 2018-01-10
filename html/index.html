@@ -190,7 +190,7 @@ $(function(){
 			        t = Math.floor(t);
 			        var playTime = secondToMin(thisAd.currentTime);
 			        $thisCon.find(s.defaults.currtime).text(playTime);
-			        $thisCon.find(s.defaults.timeline).children().css({width:(t/thisAd.duration).toFixed(4)*100+"%"})
+			        $thisCon.find(s.defaults.timeline).children().css({width:(t/parseInt(thisAd.duration)).toFixed(4)*100+"%"})
 			    }
 			    //音频播放位置发生改变时
 				$(thisAd).on("timeupdate", function() {
